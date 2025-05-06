@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dev Control Panel</title>
+    <style>
+        .message-group { margin: 20px 0; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Development Control Panel</h1>
+    <div class="message-group">
+        <h3>Settings</h3>
+        <button onclick="sendMessage('example_event', {data: {message: 'Hello from dev panel!'}})">Send example event!</button>
+    </div>
+
+    <script>
+        function sendMessage(event, data) {
+            fetch('/dev/pubsub', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event,
+                    ...data
+                })
+            });
+        }
+    </script>
+</body>
+</html>

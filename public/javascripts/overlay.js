@@ -2,10 +2,12 @@ let EBS_URL = "bukka.layerth.dev";
 let SETTINGS_URL = 'https://bukka.b-cdn.net/settings.json';
 let testing = false;
 
-// EBS_URL = "localhost:9999";
-// SETTINGS_URL = "http://localhost:9999/settings.json";
-// testing = true
 
+if (window.location.hostname === 'localhost') {
+    EBS_URL = "localhost:7777";
+    SETTINGS_URL = "http://localhost:7777/settings.json";
+    testing = true;
+}
 
 
 const ASSETS = {
@@ -15,6 +17,8 @@ const ASSETS = {
 }
 
 function ReceivedPubSub(data){
+	console.log("ReceivedPubSub", data);
+	
 	ProcessPubSub(data);
 
 	setTimeout(function(){
@@ -32,6 +36,40 @@ function ProcessPubSub(data){
 
 function ProcessPubSubDelayed(data){
 	// Process data here with delay
+}
+
+
+// Setup dev WebSocket
+let devSocket;
+if (testing) {
+    devSocket = new WebSocket(`ws://${window.location.host}`);
+    devSocket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        ReceivedPubSub(JSON.parse(message.data));
+    };
+}
+
+
+function GetExtSettings(){
+	$.ajax({
+		type: 'GET',
+		cache: false,
+		url: SETTINGS_URL,
+		crossDomain: true,
+		xhrFields: {
+			withCredentials: false
+		},
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		success: function(data){
+			ProcessSettingsJSON(data)
+		},
+		error: function(xhr, status, error){
+			console.log("Failed to get extension settings:", error);
+		}
+	});
 }
 
 $(function() {
@@ -84,27 +122,7 @@ $(function() {
 
 
 	
-	function GetExtSettings(){
-		$.ajax({
-			type: 'GET',
-			cache: false,
-			url: SETTINGS_URL,
-			crossDomain: true,
-			xhrFields: {
-				withCredentials: false
-			},
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			success: function(data){
-				ProcessSettingsJSON(data)
-			},
-			error: function(xhr, status, error){
-				console.log("Failed to get extension settings:", error);
-			}
-		});
-	}
+	
 
 
 	GetExtSettings()

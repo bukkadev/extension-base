@@ -42,6 +42,21 @@ app.use(cors({
 
 app.use('/', indexRouter);
 
+// Development routes - make sure these come before the 404 handler
+console.log("NODE_ENV: " + process.env.NODE_ENV);
+
+if (process.env.NODE_ENV === 'development') {
+  app.post('/dev/pubsub', (req, res) => {    
+      const devPubSub = req.app.get('devPubSub');
+      if (devPubSub) {
+          devPubSub.broadcast(req.body);
+          res.sendStatus(200);
+      } else {
+          res.sendStatus(500);
+      }
+  });
+}
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

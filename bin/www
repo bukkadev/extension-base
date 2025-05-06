@@ -22,6 +22,12 @@ console.log("Starting server on port " + port);
 
 var server = http.createServer(app);
 
+// Setup development PubSub server
+if (process.env.NODE_ENV === 'development') {
+  const DevPubSubServer = require('../custom_modules/dev-pubsub');
+  const devPubSub = new DevPubSubServer(server);
+  app.set('devPubSub', devPubSub);
+}
 
 
 /**
