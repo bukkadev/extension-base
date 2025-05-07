@@ -9,10 +9,14 @@ const { encrypt } = require('./custom_modules/crypto');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
+const http = require('http');
+const DevPubSubServer = require('./custom_modules/dev-pubsub');
 
 var indexRouter = require('./routes/index');
+var adminRouter = require('./routes/admin');
 
 var app = express();
+const server = http.createServer(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,20 +45,17 @@ app.use(cors({
 }));
 
 app.use('/', indexRouter);
+app.use('/admin', adminRouter);
 
 // Development routes - make sure these come before the 404 handler
 console.log("NODE_ENV: " + process.env.NODE_ENV);
 
+// Remove the existing Socket.IO initialization since it's now in DevPubSubServer
 if (process.env.NODE_ENV === 'development') {
-  app.post('/dev/pubsub', (req, res) => {    
-      const devPubSub = req.app.get('devPubSub');
-      if (devPubSub) {
-          devPubSub.broadcast(req.body);
-          res.sendStatus(200);
-      } else {
-          res.sendStatus(500);
-      }
-  });
+  const devPubSub = new DevPubSubServer(server);
+  app.set('devPubSub', devPubSub);
+  // Export the Socket.IO instance
+  module.exports.io = devPubSub.io;
 }
 
 // catch 404 and forward to error handler
@@ -73,4 +74,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+// Export the app and server
+module.exports = { app, server };

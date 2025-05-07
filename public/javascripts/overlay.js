@@ -39,14 +39,33 @@ function ProcessPubSubDelayed(data){
 }
 
 
-// Setup dev WebSocket
-let devSocket;
+// Replace the WebSocket setup with Socket.IO
+let socket;
 if (testing) {
-    devSocket = new WebSocket(`ws://${window.location.host}`);
-    devSocket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        ReceivedPubSub(JSON.parse(message.data));
+    // Load Socket.IO script dynamically
+    const script = document.createElement('script');
+    script.src = '/socket.io/socket.io.js';
+    script.onload = () => {
+        socket = io({
+            transports: ['websocket', 'polling'],
+            forceNew: true,
+            reconnectionAttempts: 3,
+            timeout: 2000
+        });
+        
+        socket.on('broadcast', (message) => {
+            ReceivedPubSub(JSON.parse(message.data));
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket connection error:', error);
+        });
+
+        socket.on('connect', () => {
+            console.log('Socket connected successfully');
+        });
     };
+    document.head.appendChild(script);
 }
 
 

@@ -1,8 +1,34 @@
 body {
-  padding: 50px;
+  padding: 0px;
+	margin: 0px;
+	color: white;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  
 }
 
 a {
   color: #00B7FF;
+}
+
+.auto-scale{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+
+.content{
+	width: 1920px;
+	height: 1080px;
+	position: absolute;
+	z-index: 2;
+	left: 50%;
+	top: 50%;
+	overflow: hidden;
+
+	transform: translate(-50%, -40%);
+}
+
+
+*, *:after, *:before{
+	box-sizing: border-box;
 }

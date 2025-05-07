@@ -323,6 +323,34 @@ twitch.getLiveChannels = async function () {
     return await loopChannels();
 }
 
-
+// Wrapper function that handles both real Twitch PubSub and dev simulation
+twitch.sendPubSubMessage = async function(channelId, message, io) {
+    try {
+        if (process.env.NODE_ENV === 'development') {
+            if (!io) {
+                throw new Error('Socket.IO instance required for development mode');
+            }
+            
+            // Emit the message in the same format as Twitch PubSub
+            io.emit('broadcast', {
+                data: JSON.stringify(message)
+            });
+            
+            return true;
+        } else {
+            // In production, use the real Twitch PubSub
+            await twitch.sendPubSub(
+                channelId,
+                'broadcast',
+                'application/json',
+                JSON.stringify(message)
+            );
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to send PubSub message:', error);
+        throw error;
+    }
+};
 
 module.exports = twitch;

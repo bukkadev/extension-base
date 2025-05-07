@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/internal_styles.css')
+  body
+    .internal-wrapper
+      header.internal-header
+        h1= title
+        if user
+          .user-info= user.name
+      main.internal-content
+        block content
+      footer.internal-footer
+        p 2025 Extension Base
+    script(src='/javascripts/socket.io.min.js')
+    block scripts 

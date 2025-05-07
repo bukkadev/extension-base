@@ -1,0 +1,53 @@
+extends ../layouts/internal
+
+block content
+  .dev-panel
+    h2 Development Panel
+    .control-section
+      h3 Test Socket Message
+      p Direct socket message to all connected clients (dev-only)
+      .input-group
+        label(for="socket-message") Message:
+        textarea#socket-message(rows="6")
+          | {
+          |   "type": "test",
+          |   "data": "Hello via Socket!"
+          | }
+      button#send-socket Send to All Clients
+
+    .control-section
+      h3 Test Twitch PubSub
+      p Force using Twitch PubSub API (production only)
+      .input-group
+        label(for="channel-id") Channel ID:
+        input#channel-id(type="text" value="39754760")
+      .input-group
+        label(for="twitch-message") Message:
+        textarea#twitch-message(rows="6")
+          | {
+          |   "message": "Hello via Twitch PubSub!"
+          | }
+      button#send-twitch-pubsub Send via Twitch
+
+    .control-section
+      h3 Test Generic Event (Should be main method for sending events)
+      p Production uses Twitch PubSub, Development uses socket.io
+      .input-group
+        label(for="pubsub-channel-id") Channel ID:
+        input#pubsub-channel-id(type="text" value="39754760")
+      .input-group
+        label(for="pubsub-message") Message:
+        textarea#pubsub-message(rows="6")
+          | {
+          |   "config": {
+          |     "show_extension": true
+          |   }
+          | }
+      button#send-pubsub Send Message
+
+    .control-section
+      h3 Quick Links
+      a(href="/video_overlay.html" target="_blank").btn Video Overlay
+
+block scripts
+  script(src='/javascripts/dev-panel.js')
