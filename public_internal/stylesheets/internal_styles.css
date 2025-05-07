@@ -12,6 +12,17 @@ body {
 	box-sizing: border-box;
 }
 
+a{
+  color: #9147ff;
+}
+
+a:hover{
+  color: #772ce8;
+}
+
+a:visited{
+  color: #a68bce;
+}
 
 .internal-wrapper {
   min-height: 100vh;
@@ -120,4 +131,40 @@ button:hover {
   padding: 0.75rem;
   margin-top: auto;
   font-size: 0.9rem;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #404040;
+}
+
+.tab-button {
+  background: transparent;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+  border-bottom: none;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+}
+
+.tab-button:hover {
+  background: #3d3d3d;
+}
+
+.tab-button.active {
+  background: #2d2d2d;
+  border-bottom: 1px solid #2d2d2d;
+  margin-bottom: -1px;
+  border-top: 2px solid #9147ff;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
 } 

@@ -1,6 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const twitch = require('../custom_modules/twitch');
+const { basicAuth, authLimiter } = require('../middleware/auth');
+
+// Add authentication middleware to all admin routes
+router.use(authLimiter);
+router.use(basicAuth);
 
 /* GET admin panel */
 router.get('/', function(req, res, next) {
